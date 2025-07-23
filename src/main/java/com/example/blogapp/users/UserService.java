@@ -1,22 +1,24 @@
 package com.example.blogapp.users;
 
 import com.example.blogapp.users.dtos.CreateUserRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     private final UsersRepository usersRepository;
+    private final ModelMapper modelMapper;
 
-    public UserService(UsersRepository usersRepository) {
-        this.usersRepository= usersRepository;
+    public UserService(UsersRepository usersRepository, ModelMapper modelMapper) {
+        this.usersRepository = usersRepository;
+        this.modelMapper = modelMapper;
     }
 
     public UserEntity createUser(CreateUserRequest u) {
-        var newUser = UserEntity.builder()
-                .username(u.getUsername())
-//                .password(password //TODO: encrypt password
-                .email(u.getEmail())
-                .build();
+        UserEntity newUser = modelMapper.map(u, UserEntity.class);
+
+        //TODO: encrypt password
+
         return usersRepository.save(newUser);
     }
 
